@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
+
+.title-design {
+    font-family: 'Courgette', cursive;
+}
+.bg-color {
+    @apply bg-yellow-50/70
+}
+
+.color-primary {
+    @apply text-stone-800
+}
+
+.color-secondary {
+    @apply text-stone-700
+}
+
+.title-font {
+    @apply text-[7rem] text-stone-800 font-semibold
+}
+
+.text-font {
+    @apply text-stone-600 text-2xl
+}
+
+.slide-in {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(255, 122, 14);
+    transform-origin: bottom;
+}
+
+.slide-out {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+    transform-origin: top;
+}
+
+@layer components {
+    .image {
+        -webkit-mask-image: url('/src/assets/o.png');
+        -webkit-mask-position: center;
+        -webkit-mask-repeat: no-repeat;
+        mask-image: url('/src/assets/o.png');
+        mask-position: center;
+        mask-repeat: no-repeat;
+        height: 100%;
+
+    }
+    .text-stroke{
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: white;
+    }
+
+    .perspective {
+        perspective: 2200px;
+    }
+    .text-stroke-login{
+        -webkit-text-fill-color: transparent;
+        -webkit-text-stroke-width: 3px;
+        -webkit-text-stroke-color: white;
+    }
+
+    .slider{
+        position:fixed;
+        width:100vw;
+        height:100svh;
+        overflow:hidden;
+    }
+
+    .slide{
+        position:fixed;
+        width:45vw;
+        height:100svh;
+        overflow:hidden;
+    }
+
+    .slide-title{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform: translate(-50%,-50%);
+        color:#fff;
+        text-align: center;
+        text-transform: uppercase;
+        font-size:.8rem;
+        font-weight: 500;
+        line-height: 1;
+        background: #000;
+        padding:0.2rem 0.4rem;
+        pointer-events: none;
+        z-index:2;
+    }
+    .thumbnail-wheel{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100vw;
+        height: 100svh;
+        pointer-events: none;
+        z-index:1;
+
+    }
+
+    .thumbnail-item{
+        position: absolute;
+        width:35px;
+        height:50px;
+        overflow:hidden;
+    }
+    @media(max-width: 1000px){
+        .slide{
+            width:75vw;
+        }
+
+        .thumbnail-item{
+            width:25px;
+            height:35px;
+            
+        }
+    }
+}
