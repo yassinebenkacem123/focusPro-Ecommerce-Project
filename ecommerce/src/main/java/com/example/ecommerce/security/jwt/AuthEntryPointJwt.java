@@ -1,0 +1,48 @@
+package com.example.ecommerce.security.jwt;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Service;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import tools.jackson.databind.ObjectMapper;
+
+import org.springframework.http.MediaType;
+
+// this is for provide custom handling for unauthorized request.
+// so we are going to change the response that the user will get if is not authentificated.
+
+
+@Service
+public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+    @Override
+    public void commence(
+        HttpServletRequest request, 
+        HttpServletResponse response,
+        AuthenticationException authException) throws IOException, ServletException {
+            
+        logger.error("Unauthorized error: {}", authException.getMessage());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        final Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+        body.put("error", "Unauthorized");
+        body.put("message", authException.getMessage());
+        body.put("path", request.getServletPath());
+
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(), body);
+
+    }
+    
+}
