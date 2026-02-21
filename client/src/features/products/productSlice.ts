@@ -14,13 +14,8 @@ const initialState = {
 
 //define the async thunk action
 export const fetchProducts = createAsyncThunk("products/fetchProducts",
-    async ({sortBy, sortOrder}:{sortBy?: string, sortOrder?: string}) => {
-        const response = await api.get("/public/getAllProducts", {
-            params: {
-                sortBy,
-                sortOrder
-            }
-        });
+    async (queryString: string) => {
+        const response = await api.get(`/public/getAllProducts?${queryString}`);
         return response.data;
     }
 )

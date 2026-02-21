@@ -1,4 +1,3 @@
-import type { ReactEventHandler } from "react";
 import { priceRanges, categories } from "../../lib/staticData";
 
 const FilterSideBar = ({ handleCategorySelect }: { handleCategorySelect: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
@@ -26,11 +25,12 @@ const FilterSideBar = ({ handleCategorySelect }: { handleCategorySelect: (e: Rea
                 key={category.categoryId}
                 className="group flex items-center cursor-pointer"
               >
-                <form  className="relative flex items-center">
+                <div  className="relative flex items-center">
                   <input
                     value={category.categoryName}
                     onChange={(e) => handleCategorySelect(e)}
-                    type="checkbox"
+                    type="radio"
+                    name="categories"
                     id={`category-${category.categoryId}`}
                     className="peer h-7 w-7 cursor-pointer appearance-none rounded border border-stone-300 bg-white transition-all checked:bg-stone-900 checked:border-stone-900 hover:border-stone-400"
                   />
@@ -46,7 +46,7 @@ const FilterSideBar = ({ handleCategorySelect }: { handleCategorySelect: (e: Rea
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                </form>
+                </div>
                 <span className="ml-3 text-lg font-medium text-stone-600 group-hover:text-stone-900 transition-colors">
                   {category.categoryName}
                 </span>

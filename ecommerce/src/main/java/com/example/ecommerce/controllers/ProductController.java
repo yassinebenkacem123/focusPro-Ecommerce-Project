@@ -45,6 +45,16 @@ public class ProductController {
     @GetMapping("/public/getAllProducts")
     public ResponseEntity<?> getAllProducts(
         @RequestParam(
+            name="keyword",
+            required = false,
+            defaultValue = ""
+        ) String keyword,
+        @RequestParam(
+            name="category",
+            required = false,
+            defaultValue = ""
+        ) String category,
+        @RequestParam(
             name="pageSize",
             required = false,
             defaultValue = AppConstants.PAGE_SIZE
@@ -65,7 +75,7 @@ public class ProductController {
             defaultValue = AppConstants.SORT_DIR
         ) String sortOrder
     ){
-        return productService.getAllProduct(pageNumber, pageSize, sortBy, sortOrder);
+        return productService.getAllProduct(pageNumber, pageSize, sortBy, sortOrder, keyword, category);
     }
     
 

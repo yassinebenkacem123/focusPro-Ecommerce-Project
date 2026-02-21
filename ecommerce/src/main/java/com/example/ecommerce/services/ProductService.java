@@ -18,7 +18,9 @@ public interface ProductService {
         Integer pageNumber,
         Integer pageSize,
         String sortBy,
-        String orderBy
+        String orderBy,
+        String keyword,
+        String category
     );
 
     // get product by category.

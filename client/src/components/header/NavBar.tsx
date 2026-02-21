@@ -3,16 +3,30 @@ import Search from "./Search"
 import Logo from "./Logo"
 import { FaStore } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
-import { useState, type JSX } from "react";
+import { useEffect, useState, type JSX } from "react";
 import { IoSearch } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Menu from "./menu/Menu";
 const NavBar = (): JSX.Element => {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const pathName = window.location.pathname;
+  useEffect(()=>{
+      const handler = setTimeout(()=>{
+          if(searchQuery.length > 0){
+            searchParams.set("keyword", searchQuery);
+          }else{
+            searchParams.delete("keyword");
 
+          }
+          navigate(`${pathName}?${searchParams.toString()}`);
+      }, 700);
+      return ()=> clearTimeout(handler);
+  },[searchQuery, navigate, pathName, searchParams])
   return (
     <>
       <AnimatePresence>
@@ -63,10 +77,7 @@ const NavBar = (): JSX.Element => {
       {/* Search Form */}
       <AnimatePresence>
         {openSearch && <motion.form
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            console.log("searching...");
-          }}
+          
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "3.2rem" }}
           exit={{ opacity: 0, height: 0 }}
@@ -74,7 +85,8 @@ const NavBar = (): JSX.Element => {
           className="h-13 border-r border-l  border-stone-300 border-b flex items-center px-5 bg-white/50  mr-15  ml-15">
           <IoSearch size={20} className="text-stone-800 mr-3" />
           <input
-
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full outline-none text-xl  border-none h-full"
             required
             placeholder="Search for a product..." />

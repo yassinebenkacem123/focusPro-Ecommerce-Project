@@ -116,6 +116,10 @@ export const dashboardAdminLinks:AdminLink[]=[
 
 export  const categories:Category[] =  [
     {
+        categoryId:0,
+        categoryName:"All Categories"
+    },
+    {
       categoryId:1,
       categoryName:"Cameras",
       categoryImage:"/categories/cameras.webp",

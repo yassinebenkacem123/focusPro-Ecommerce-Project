@@ -8,18 +8,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../../features/products/productSlice";
 import type { RootState } from "../../store/store";
-import Filter from "../../components/productComponents/Filter";
 import {sortByOptions } from "../../lib/staticData";
 import FilterSideBar from "../../components/productComponents/FilterSideBar";
 import SortDropdown from "../../components/productComponents/SortDropDown";
 import { useSearchParams } from "react-router-dom";
+import { useProductFilter } from "../../components/productComponents/useProductFilter";
 
 const Products = () => {
   const [searchParams,setSearchParams] = useSearchParams();
   let sortBy = searchParams.get("sortBy") || "";
   let sortOrder = searchParams.get("sortOrder") || "";
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const params = new URLSearchParams(searchParams);
+  const categoryParam = searchParams.get("category") || "";
+  const category = categoryParam ? categoryParam : "all";
   const onSelectSort = (sortBy: string, order: string) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev); 
@@ -27,26 +27,37 @@ const Products = () => {
       next.set("sortOrder", order);
       return next;
     });
-};
+  };
+  useProductFilter();
   const { content: products, isLoading, errorMessage } = useSelector((state: RootState) => state.products);
   const dispatch = useDispatch<any>();
-  useEffect(() => {
-    dispatch(fetchProducts({sortBy, sortOrder}));
-  }, [dispatch, sortBy, sortOrder]);
+
+  // useEffect(() => {
+  //   dispatch(fetchProducts({sortBy, sortOrder}));
+  // }, [dispatch, sortBy, sortOrder]);
   
   const handleCategorySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("Selected category:", e.target.value);
+    const value = e.target.value;
+    setSearchParams((prev: URLSearchParams)=>{
+      const next = new URLSearchParams(prev);
+      if(value.toLowerCase() === "all categories"){
+        next.delete("category");
+      }else{
+        next.set("category", value.toLowerCase());
+      }
+      return next;
+    })
   }
   return (
     <Template>
     
       <section className="min-h-screen flex-col gap-5 flex px-15 ">
- 
+{/*  
    <div className="w-full flex gap-4 h-140">
           <div className="w-[34%] items-center justify-center flex">
-            {/* <img
+            <img
               className="w-110" 
-              src="/camera-logo.png" alt="" /> */}
+              src="/camera-logo.png" alt="" />
 
           </div>
           <div className="w-[33%] flex flex-col justify-center items-center ">
@@ -60,17 +71,17 @@ const Products = () => {
       
           </div>
           <div className="w-[34%]  flex items-center justify-center">
-            {/* <img 
+            <img 
             className="w-100" 
-            src="/image-special-icon.png" alt="" /> */}
+            src="/image-special-icon.png" alt="" />
           </div>
         </div>
       
 
 
 
-        {/* filter */}
-        <Filter />  
+        <Filter 
+        />   */}
      
         
         <div className="w-full py-4 flex flex-col gap-5">
