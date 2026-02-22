@@ -37,7 +37,7 @@ const ProductCard = ({
     }}
       className='border border-gray-300 rounded-lg shadow-md hover:shadow-lg cursor-pointer flex flex-col justify-between'>
       <img
-        src={productImage} alt={productName} />
+        src={"https://placehold.co/600x400"} alt={productName} />
 
       <div className='p-2 flex flex-col gap-2'>
         <h1 className='text-xl font-medium text-black'>{productName}</h1>

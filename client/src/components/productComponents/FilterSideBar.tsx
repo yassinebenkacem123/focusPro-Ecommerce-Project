@@ -1,6 +1,13 @@
-import { priceRanges, categories } from "../../lib/staticData";
+import { priceRanges } from "../../lib/staticData";
+import {useSelector} from "react-redux";
+import type { RootState } from "../../store/store";
+interface Category {
+  categoryName:string
+  categoryId:number
+}
+const FilterSideBar = ({ handleCategorySelect}: { handleCategorySelect: (e: React.ChangeEvent<HTMLInputElement>) => void}) => {
+  const categories: Category[] = useSelector((state: RootState) => state.categories.content);
 
-const FilterSideBar = ({ handleCategorySelect }: { handleCategorySelect: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
   return (
     <aside className="hidden md:flex flex-col w-[20%] pr-8 border-r border-stone-200 min-h-screen">
       <div className="flex items-center justify-between mb-10">
@@ -20,9 +27,11 @@ const FilterSideBar = ({ handleCategorySelect }: { handleCategorySelect: (e: Rea
             Categories
           </h3>
           <div className="flex flex-col gap-3">
-            {categories.map((category) => (
+            {
+            categories.length && 
+            categories.map((category, index) => (
               <label
-                key={category.categoryId}
+                key={index}
                 className="group flex items-center cursor-pointer"
               >
                 <div  className="relative flex items-center">

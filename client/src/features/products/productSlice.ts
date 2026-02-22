@@ -1,6 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
-const initialState = {
+interface Product {
+    productId: number;
+    productName: string;
+    productImage: string;
+    description: string;
+    quantity: number;
+    price: number;
+    specialPrice: number;
+    discounte: number;
+
+}
+interface ProductState {
+    content: Product[];
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    totalElements: number;
+    theLast: boolean;
+    isLoading: boolean;
+    errorMessage: string;
+}
+
+const initialState: ProductState = {
     content: [],
     pageNumber: 0,
     pageSize: 50,
@@ -9,8 +31,8 @@ const initialState = {
     theLast: true,
     isLoading: false,
     errorMessage: ""
-
 };
+
 
 //define the async thunk action
 export const fetchProducts = createAsyncThunk("products/fetchProducts",
@@ -52,8 +74,9 @@ const productSlice = createSlice({
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.isLoading = false;
-                state.errorMessage = action.error.message || "Something went wrong";
+                state.errorMessage = action.error.message || "Failed to fetch products";
             })
+           
     }
 });
 

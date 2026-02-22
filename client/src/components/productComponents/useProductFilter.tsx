@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom"
-import { fetchProducts } from "../../features/products/productSlice";
+import {fetchProducts } from "../../features/products/productSlice";
+import { fetchCategories } from "../../features/categories/categorySlice";
 
 export const useProductFilter = ()=>{
     const [searchParams] = useSearchParams();
@@ -31,6 +32,7 @@ export const useProductFilter = ()=>{
 
         const queryString = params.toString();
         dispatch(fetchProducts(queryString) as any);
+        dispatch(fetchCategories() as any);
     },[dispatch, searchParams])
 
 }

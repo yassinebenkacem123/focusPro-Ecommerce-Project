@@ -1,11 +1,12 @@
 import productReducer from "../features/products/productSlice";
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/authentication/authSlice';
+import categoryReducer from '../features/categories/categorySlice';
 const store = configureStore({
     reducer: {
         products: productReducer,
-        auth: authReducer
-
+        auth: authReducer,
+        categories:categoryReducer
     },
     preloadedState: {}
 })
