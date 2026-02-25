@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
         
         // check if the product exist or not
         Product productToadd = productRepo.findById(productId).orElseThrow(
-            ()-> new ResourceNotFoundException("Product","Product",productId)
+            ()-> new ResourceNotFoundException("Product","ProductId",productId)
         );
 
         // check if the product already added.

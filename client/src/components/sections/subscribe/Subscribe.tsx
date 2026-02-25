@@ -9,17 +9,17 @@ const Subscribe = () => {
         <RevealText as="h1" className="flex px-3 flex-col w-[60%] gap-10">
             <h1 className="text-8xl text-stone-800 font-medium  relative">
                 Subscribe to 
-                <StartDeco 
+                {/* <StartDeco 
                     bgColor="bg-white/80"
                     startSize={70}   
                     padding="p-1" 
                     position="absolute right-50 top-5"
                     startColor="text-amber-300"
                 />
-                <br/>
+                <br/> */}
                 Our newsletters
             </h1>
-
+            </RevealText>
             <RevealText as="p"  className="text-font">
                 Subscribe to our newsletter and be the first to know about new product launches, 
                 and inspiring stories from the world of the photography.
@@ -39,7 +39,7 @@ const Subscribe = () => {
                     <MdOutlineKeyboardArrowRight size={30}/>
                 </button>
             </div>
-        </RevealText>
+      
 
         {/* right part. */}
         <div className="w-[40%] justify-end flex ">

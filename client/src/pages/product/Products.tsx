@@ -4,8 +4,6 @@ import ProductCard from "../../components/productComponents/ProductCard";
 import ResourceNotFound from "../../components/ressourceNotFound/ResourceNotFound";
 import Template from "../../utils/Template";
 import type { Product } from "../../lib/type";
-import { useSelector} from "react-redux";
-import type { RootState } from "../../store/store";
 import {sortByOptions } from "../../lib/staticData";
 import FilterSideBar from "../../components/productComponents/FilterSideBar";
 import SortDropdown from "../../components/productComponents/SortDropDown";
@@ -13,6 +11,8 @@ import { useSearchParams } from "react-router-dom";
 import { useProductFilter } from "../../components/productComponents/useProductFilter";
 import Filter from "../../components/productComponents/Filter";
 import PaginationComponent from "../../components/productComponents/PaginationComponent";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const Products = () => {
 
@@ -26,7 +26,7 @@ const Products = () => {
     });
   };
   useProductFilter();
-  const { content: products, isLoading, errorMessage } = useSelector((state: RootState) => state.products);
+  const { content: products,totalPages, isLoading, errorMessage } = useSelector((state: RootState) => state.products);
   const handleCategorySelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchParams((prev: URLSearchParams)=>{
@@ -98,8 +98,8 @@ const Products = () => {
                     ))}
                   </div>
                 )}
-                <div className="w-full flex items-center justify-center py-3">
-                  <PaginationComponent />
+                <div className="w-full flex items-center justify-center py-10">
+                  <PaginationComponent totalPages={totalPages} />
                 </div>
               </div>
             </div>

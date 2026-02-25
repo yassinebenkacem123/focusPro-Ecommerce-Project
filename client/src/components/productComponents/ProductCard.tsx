@@ -1,5 +1,9 @@
 import React from 'react'
 import type { Product } from '../../lib/type'
+import { HiMiniShoppingCart } from "react-icons/hi2";
+import { MdRemoveShoppingCart } from "react-icons/md";
+import { useDispatch } from 'react-redux';
+import { addProductToCart } from '../../features/cart/cartSlice';
 
 const ProductCard = ({
   productName,
@@ -13,6 +17,7 @@ const ProductCard = ({
   specialPrice,
 }: Product
 ): React.JSX.Element => {
+  const dispatch = useDispatch();
   const [openProductViewModal, setOpenProductViewModal] = React.useState<boolean>(false);
   const isAvailable = quantity && Number(quantity) > 0;
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
@@ -20,6 +25,23 @@ const ProductCard = ({
   const handleSelectProduct = (product: Product) => {
     setSelectedProduct(product);
     setOpenProductViewModal(true);
+  }
+
+  const addToCartHandler =  ()=>{
+    dispatch(addProductToCart({
+      product:{
+        productId,
+        productName,
+        productImage,
+        description,
+        discount,
+        discounte,
+        price,
+        quantity,
+        specialPrice,
+      },
+      qty: 1,
+    }));
   }
   return (
     <div onClick={() => {
@@ -35,12 +57,22 @@ const ProductCard = ({
         specialPrice
       })
     }}
-      className='border border-gray-300 rounded-lg shadow-md hover:shadow-lg cursor-pointer flex flex-col justify-between'>
-      <img
+      className='border border-gray-300 p-2 rounded-lg shadow-md hover:shadow-lg cursor-pointer flex flex-col justify-between'>
+      <div className='w-full  relative shadow-md rounded-lg overflow-hidden'>
+        <div className='absolute '>
+          <span className='px-2 py-1 bg-orange-500 text-white text-xs rounded-br-lg'>
+            {discount ? `-${discount}%` : discounte ? `-${discounte}%` : "No discount"}
+          </span>
+        </div>
+        <img
         src={"https://placehold.co/600x400"} alt={productName} />
-
+      </div>
+      {/* company name :  */}
+      <div className='mt-4'>
+        <h1 className='text-sm font-medium bg-stone-800 text-white p-1 w-[24%] text-center rounded-full'>FocusPro</h1>
+      </div>
       <div className='p-2 flex flex-col gap-2'>
-        <h1 className='text-xl font-medium text-black'>{productName}</h1>
+        <h1 className='text-lg font-semibold text-black'>{productName}</h1>
         <p className='text-md text-gray-700'>
           {description}
         </p>
@@ -56,17 +88,23 @@ const ProductCard = ({
             <span className='text-lg font-semibold text-black'>${price.toFixed(2)}</span>
           )
         }
-        <button>
+        
+      </div>
+     <div className='flex w-full gap-4 justify-between  items-center py-1'>
+      <button className='bg-stone-800 w-[70%] text-white text-xl p-2 rounded-lg hover:bg-stone-800/90'>
+        By now 
+      </button>
+       <button
+        onClick={addToCartHandler}
+        title={isAvailable ? "Add to cart" : "Out of stock"}
+        className={`w-[30%] flex  items-center justify-center bg-orange-500 text-white p-2 rounded-lg ${!isAvailable ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-500/80'}`} disabled={!isAvailable || isBtnLoading}>
           {isAvailable ? (
-            <span className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700'>
-              {isBtnLoading ? 'Adding...' : 'Add to Cart'} </span>
+              <HiMiniShoppingCart size={30} />
           ) : (
-            <span className='px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed'>
-              Out of Stock
-            </span>
+            <MdRemoveShoppingCart size={30} />
           )}
         </button>
-      </div>
+     </div>
 
     </div>
   )
