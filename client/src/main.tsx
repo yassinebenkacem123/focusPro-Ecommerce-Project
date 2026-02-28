@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <StrictMode>
         <App />
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+        <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar />
       </StrictMode>
     </Provider>
   </BrowserRouter>

@@ -1,48 +1,63 @@
 import { createSlice } from "@reduxjs/toolkit";
-interface CartState {
-    cart: any[];
+
+export interface CartItem  {
+    productId: number;
+    productName: string;
+    productImage: string;
+    price: number;
+    discount: number;
+    specialPrice: number;
+    description: string;
+    quantity: number;
+}
+export interface CartState {
+    cart: CartItem[];
     totalPrice: number;
     cartId: number | null;
 }
 
 const initialState: CartState = {
-    cart:[],
-    totalPrice:0,
-    cartId:null
+    cart: [],
+    totalPrice: 0,
+    cartId: null
 }
 
 
 
 
 const cartSlice = createSlice({
-    name:"cart",
+    name: "cart",
     initialState,
-    reducers:{
-        addProductToCart:(state, action)=>{
-            const {product, qty} = action.payload;
+    reducers: {
+        addProductToCart: (state, action) => {
+            const { product, qty } = action.payload;
 
             const isQuantityExist = product.quantity && product.quantity >= qty;
-            if(isQuantityExist){
-               const existingProduct = state.cart.find((item) => item.productId === product.productId);
-               if(existingProduct){
+            if (isQuantityExist) {
+                const existingProduct = state.cart.find((item) => item.productId === product.productId);
+                if (existingProduct) {
                     const updatedCart = state.cart.map((item) => {
-                        if(item.productId === product.productId){
+                        if (item.productId === product.productId) {
                             return product;
-                        }else{
+                        } else {
                             return item;
                         }
                     })
                     state.cart = updatedCart;
-                }else{
+                    localStorage.setItem("cartItems", JSON.stringify(state.cart));
+
+                } else {
                     const newCart = [...state.cart, product];
                     state.cart = newCart;
+                    localStorage.setItem("cartItems", JSON.stringify(state.cart));
                 }
-                
+            } else {
+                // Intentionally no side-effects here; UI should handle messaging (e.g. toast).
             }
         }
 
     },
 });
 
-export const {addProductToCart} = cartSlice.actions;
+export const { addProductToCart } = cartSlice.actions;
 export default cartSlice.reducer;

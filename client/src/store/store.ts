@@ -1,3 +1,4 @@
+import type { CartState } from './../features/cart/cartSlice';
 import productReducer from "../features/products/productSlice";
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/authentication/authSlice';
@@ -13,7 +14,7 @@ const initialState = {
         cart: cartItems,
         totalPrice: 0,
         cartId: null,
-    }
+    } as CartState
 }
 const store = configureStore({
     reducer: {

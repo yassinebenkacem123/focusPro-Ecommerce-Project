@@ -18,6 +18,7 @@ import ProductReviews from "./pages/admin/ProductReviews"
 import Brands from "./pages/admin/Brands"
 import AdminSettings from "./pages/admin/AdminSettings"
 import AdminProfile from "./pages/admin/AdminProfile"
+import Cart from "./pages/cart/Cart"
 function App() {
 
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="products" element={<Products />} />
+          <Route path="cart" element={<Cart />} />
           <Route path="auth" element={<Authentication />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>

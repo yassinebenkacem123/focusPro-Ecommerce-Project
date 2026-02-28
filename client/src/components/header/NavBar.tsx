@@ -7,6 +7,8 @@ import { useEffect, useState, type JSX } from "react";
 import { IoSearch } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { HiShoppingCart } from "react-icons/hi2";
+
 import Menu from "./menu/Menu";
 const NavBar = (): JSX.Element => {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
@@ -60,6 +62,13 @@ const NavBar = (): JSX.Element => {
             title="products"
             className="border cursor-pointer hover:bg-stone-100/70 border-stone-800 rounded-full p-3">
             <FaStore size={25} />
+          </button>
+          {/* cart */}
+          <button 
+          title="cart"
+          className="border cursor-pointer hover:bg-stone-100/70 border-stone-800 rounded-full p-3"
+          onClick={() => navigate("/cart")}>
+            <HiShoppingCart size={25} />
           </button>
 
           {/* Login */}
