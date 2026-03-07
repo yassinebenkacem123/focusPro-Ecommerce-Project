@@ -6,7 +6,7 @@ const Subscribe = () => {
   return (
     <div className="flex py-10 px-7 mb-10 justify-between bg-stone-200/40 gap-7 items-start">
         {/* left part. */}
-        <RevealText as="h1" className="flex px-3 flex-col w-[60%] gap-10">
+        <RevealText as="div" className="flex px-3 flex-col w-[60%] gap-10">
             <h1 className="text-8xl text-stone-800 font-medium  relative">
                 Subscribe to 
                 {/* <StartDeco 

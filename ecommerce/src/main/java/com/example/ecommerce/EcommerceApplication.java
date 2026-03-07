@@ -7,6 +7,19 @@ import org.springframework.context.annotation.Bean;
 import com.example.ecommerce.models.AppRole;
 import com.example.ecommerce.models.Role;
 import com.example.ecommerce.repository.RoleRepo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+@ToString
+@Data
+@Setter
+@EqualsAndHashCode
+@AllArgsConstructor
+@Getter
 @SpringBootApplication
 public class EcommerceApplication {
 

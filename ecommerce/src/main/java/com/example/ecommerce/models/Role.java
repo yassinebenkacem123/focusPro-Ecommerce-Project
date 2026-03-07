@@ -3,7 +3,6 @@ package com.example.ecommerce.models;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -17,10 +16,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="roles")
@@ -34,5 +36,7 @@ public class Role {
     @ManyToMany(mappedBy = "userRoles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     List<User> users = new ArrayList<User>();
+
+  
     
 }

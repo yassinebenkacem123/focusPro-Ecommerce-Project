@@ -106,7 +106,9 @@ public class AuthController {
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles);
+                roles,
+                userDetails.getProvider(),
+                userDetails.getImageUrl());
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(loginResponse);
@@ -150,7 +152,9 @@ public class AuthController {
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail(),
-                    roles);
+                    roles,
+                    userDetails.getProvider(),
+                    userDetails.getImageUrl());
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         }
         return null;
@@ -170,14 +174,14 @@ public class AuthController {
 
     // forget password :
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword(@RequestParam(name="email") String email) {
+    public ResponseEntity<?> forgetPassword(@RequestParam(name = "email") String email) {
         User user = userRepo.findByEmail(email);
         if (user == null) {
             throw new APIException("No user with this email.");
         }
         PasswordResetToken passwordResetToken = passwordResetTokenRepo.findByUser(user);
-        if(passwordResetToken == null){
-            passwordResetToken = new  PasswordResetToken();
+        if (passwordResetToken == null) {
+            passwordResetToken = new PasswordResetToken();
         }
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
 
@@ -190,12 +194,12 @@ public class AuthController {
 
         String resetLink = frontendUrl + "/auth?mode=reset&token=" + token;
         emailService.sendEmail(user.getEmail(),
-         "Reset Your Password",
-            "Hello " + user.getUsername() + ",\n\n"
-            + "We received a request to reset your password. "
-            + "Click the link below to reset it (valid for 15 minutes):\n"
-            + resetLink + "\n\n"
-            + "If you didn’t request a password reset, please ignore this email.");
+                "Reset Your Password",
+                "Hello " + user.getUsername() + ",\n\n"
+                        + "We received a request to reset your password. "
+                        + "Click the link below to reset it (valid for 15 minutes):\n"
+                        + resetLink + "\n\n"
+                        + "If you didn’t request a password reset, please ignore this email.");
         APIResponse apiResponse = new APIResponse();
         apiResponse.setMessage("Password reset link has been sent to your email.");
         apiResponse.setStatus(true);
@@ -203,10 +207,10 @@ public class AuthController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-
     // reset password :
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordDTO resetPasswordDTO) {
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token,
+            @RequestBody ResetPasswordDTO resetPasswordDTO) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepo.findByToken(token);
         if (passwordResetToken == null || passwordResetToken.getExpireDate().isBefore(LocalDateTime.now())) {
             throw new APIException("Invalid or expired token.");
@@ -222,26 +226,22 @@ public class AuthController {
         apiResponse.setStatus(true);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 
-
     }
     // google auth2.0
 
     @GetMapping("/oauth2/google/url")
-    public ResponseEntity<?> getGoogleOAuth2Url(){
+    public ResponseEntity<?> getGoogleOAuth2Url() {
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
         String googleOAuth2Url = baseUrl + "/oauth2/authorization/google";
-          
+
         Map<String, Object> response = new HashMap<>();
         response.put("url", googleOAuth2Url);
         response.put("method", "GET");
         response.put("description", "Redirect user to this URL to initiate Google OAuth2 login");
         response.put("note", "After successful authentication, JWT token will be stored in HTTP-only cookie");
-        
+
         return ResponseEntity.ok(response);
-    
-    
-    
+
     }
-    
 
 }

@@ -50,8 +50,18 @@ const Login = () => {
 
   const [state, formAction, pending] = useActionState(
     async (_prevState: ActionState, formDataFromSubmit: FormData): Promise<ActionState> => {
-      const email = String(formDataFromSubmit.get("email") ?? "");
+      const email = String(formDataFromSubmit.get("email") ?? "").trim();
       const password = String(formDataFromSubmit.get("password") ?? "");
+
+      if (!email || !password) {
+        return { ok: false, message: "Email and password are required.", roles: null };
+      }
+
+      // Match backend validation contract and avoid preventable 400 responses.
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return { ok: false, message: "Please enter a valid email address.", roles: null };
+      }
 
       try {
         const response = await dispatch(login({ email, password })).unwrap();
@@ -78,7 +88,7 @@ const Login = () => {
       navigate("/seller/dashboard");
       return;
     } else if (state.roles.includes("ROLE_ADMIN")) {
-      navigate("/admin/dashboard");
+      navigate("/admin");
       return;
     }
     navigate("/");
@@ -129,6 +139,7 @@ const Login = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            required
             className="w-full bg-white/5 border border-yellow-50/10 border-b-2 border-b-orange-400/50 text-yellow-50 pl-10 pr-4 py-3 rounded-t-md focus:outline-none focus:bg-white/10 focus:border-b-orange-400 transition-all placeholder:text-yellow-50/20"
           />
         </div>
@@ -156,6 +167,7 @@ const Login = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
+            required
             className="w-full bg-white/5 border border-yellow-50/10 border-b-2 border-b-orange-400/50 text-yellow-50 pl-10 pr-12 py-3 rounded-t-md focus:outline-none focus:bg-white/10 focus:border-b-orange-400 transition-all placeholder:text-yellow-50/20"
           />
           <button

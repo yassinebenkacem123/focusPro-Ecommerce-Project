@@ -2,19 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Login from "../../components/authComponents/Login";
 import Register from "../../components/authComponents/Register";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import FogetPassword from "../../components/authComponents/FogetPassword";
 import ResetPassword from "../../components/authComponents/ResetPassword";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../store/store";
 import { fetchCurrentUser } from "../../features/authentication/authSlice";
 import api from "../../api/api";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const Authentication = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [mode, setMode] = useState<"login" | "register" | "forgot" | "reset">("login");
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { username, initialized, loading } = useSelector((state: RootState) => state.auth);
   const containerRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef(false);
   const hasMountedRef = useRef(false);
@@ -106,6 +109,10 @@ const Authentication = () => {
   const isReset = mode === "reset";
   const hideSocial = isForgot || isReset;
 
+  if (initialized && !loading && username) {
+    return <Navigate to="/profile" replace />;
+  }
+
   return (
     // <Template>
     <section className="relative  bg-stone-900 flex items-center justify-center h-screen w-full overflow-hidden">
@@ -141,7 +148,7 @@ const Authentication = () => {
                 className="w-[75%] cursor-pointer flex items-center justify-center rounded-full border border-yellow-50/20 px-4 py-3 text-sm font-semibold text-yellow-50/80 hover:bg-yellow-50/5 transition-colors"
               >
                 <img
-                   
+
                   src="/icons/google.png" alt="Google logo" className="inline-block w-10 mr-3" />
                 <span className="text-lg">
                   Sign in with Google

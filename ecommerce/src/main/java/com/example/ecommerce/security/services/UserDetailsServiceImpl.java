@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username); // select * from user where username = ?
         if (user == null) {
             throw new UsernameNotFoundException("the user with the name " + username + " not found");
         }

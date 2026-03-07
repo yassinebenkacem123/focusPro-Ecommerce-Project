@@ -1,10 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../../api/api';
+
+type AuthProvider = "LOCAL" | "GOOGLE" | "FACEBOOK" | null;
+
 const initialState = {
     id: null as number | null,
     username: "" as string,
     email: "" as string,
     roles: [] as string[],
+    provider: null as AuthProvider,
+    imageUrl: "" as string,
     initialized: false as boolean,
     loading: false as boolean,
     error: null as string | null
@@ -147,6 +152,8 @@ const authSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.roles = action.payload.roles;
+            state.provider = (action.payload.provider ?? null) as AuthProvider;
+            state.imageUrl = String(action.payload.imageUrl ?? "");
         });
         builder.addCase(login.rejected, (state, action) => {
             state.loading = false;
@@ -163,6 +170,8 @@ const authSlice = createSlice({
             state.username = "";
             state.email = "";
             state.roles = [];
+            state.provider = null;
+            state.imageUrl = "";
         });
         builder.addCase(logout.rejected, (state, action) => {
             state.loading = false;
@@ -204,6 +213,8 @@ const authSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.roles = action.payload.roles;
+            state.provider = (action.payload.provider ?? null) as AuthProvider;
+            state.imageUrl = String(action.payload.imageUrl ?? "");
         });
         builder.addCase(fetchCurrentUser.rejected, (state, action) => {
             state.loading = false;
@@ -213,6 +224,8 @@ const authSlice = createSlice({
             state.username = "";
             state.email = "";
             state.roles = [];
+            state.provider = null;
+            state.imageUrl = "";
             state.error = extractErrorMessage(action.payload);
         });
     },

@@ -7,9 +7,13 @@ import { useEffect, useState, type JSX } from "react";
 import { IoSearch } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { HiShoppingCart } from "react-icons/hi2";
 
 import Menu from "./menu/Menu";
+import CustomBadge from "./menu/CustomBadge";
+import type { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
+import type { CartState } from "../../features/cart/cartSlice";
+import UserAvatar from "./UserAvatar";
 const NavBar = (): JSX.Element => {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -17,18 +21,23 @@ const NavBar = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchParams] = useSearchParams();
   const pathName = window.location.pathname;
-  useEffect(()=>{
-      const handler = setTimeout(()=>{
-          if(searchQuery.length > 0){
-            searchParams.set("keyword", searchQuery);
-          }else{
-            searchParams.delete("keyword");
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery.length > 0) {
+        searchParams.set("keyword", searchQuery);
+      } else {
+        searchParams.delete("keyword");
 
-          }
-          navigate(`${pathName}?${searchParams.toString()}`);
-      }, 700);
-      return ()=> clearTimeout(handler);
-  },[searchQuery, navigate, pathName, searchParams])
+      }
+      navigate(`${pathName}?${searchParams.toString()}`);
+    }, 700);
+    return () => clearTimeout(handler);
+  }, [searchQuery, navigate, pathName, searchParams])
+
+  const { cart } = useSelector((state: RootState) => state.carts) as CartState
+  const { username, initialized, loading, provider, imageUrl } = useSelector((state: RootState) => state.auth);
+  const isAuthenticated = Boolean(username);
+  const showUserAvatar = initialized && !loading && isAuthenticated;
   return (
     <>
       <AnimatePresence>
@@ -48,8 +57,7 @@ const NavBar = (): JSX.Element => {
 
         </div>
 
-        {/* Logo */}
-        <Logo 
+        <Logo
           size={"text-4xl"}
         />
 
@@ -63,22 +71,26 @@ const NavBar = (): JSX.Element => {
             className="border cursor-pointer hover:bg-stone-100/70 border-stone-800 rounded-full p-3">
             <FaStore size={25} />
           </button>
-          {/* cart */}
-          <button 
-          title="cart"
-          className="border cursor-pointer hover:bg-stone-100/70 border-stone-800 rounded-full p-3"
-          onClick={() => navigate("/cart")}>
-            <HiShoppingCart size={25} />
-          </button>
 
-          {/* Login */}
-          <button
-            title="Login"
-            className="border-2 bg-orange-500 hover:bg-orange-500/90 text-yellow-50 cursor-pointer border-stone-800 rounded-full p-3"
-            onClick={() => navigate("/auth")}
-          >
-            <FaUser size={25} />
-          </button>
+          {/* cart */}
+          <CustomBadge count={cart?.length} />
+
+          {/* Login / User */}
+          {showUserAvatar ? (
+            <UserAvatar
+              username={username}
+              provider={provider}
+              imageUrl={imageUrl}
+            />
+          ) : (
+            <button
+              title="Login"
+              className="border-2 bg-orange-500 hover:bg-orange-500/90 text-yellow-50 cursor-pointer border-stone-800 rounded-full p-3"
+              onClick={() => navigate("/auth")}
+            >
+              <FaUser size={25} />
+            </button>
+          )}
         </div>
 
       </nav>
@@ -86,7 +98,7 @@ const NavBar = (): JSX.Element => {
       {/* Search Form */}
       <AnimatePresence>
         {openSearch && <motion.form
-          
+
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "3.2rem" }}
           exit={{ opacity: 0, height: 0 }}

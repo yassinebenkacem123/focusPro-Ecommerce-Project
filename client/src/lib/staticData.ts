@@ -1,6 +1,6 @@
 import type { AdminLink, CameraInfo, Category } from "./type";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { FaRegUser } from "react-icons/fa";
+import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { MdPayment } from "react-icons/md";
 import { MdOutlineCategory } from "react-icons/md";
@@ -9,6 +9,8 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { MdOutlineReviews } from "react-icons/md";
 import { CiStar } from "react-icons/ci";
 import { CiSettings } from "react-icons/ci";
+import { TbTruckReturn } from "react-icons/tb";
+import { LuLogOut } from "react-icons/lu";
 
 
 export const CAMERA_DATA: CameraInfo[] = [
@@ -154,3 +156,13 @@ export const priceRanges = [
     { label: "$1000 - $5000", value: "1000-5000" },
     { label: "$5000+", value: "5000+" },
   ];
+
+export const links: { name: string; to: string; icon:React.ElementType }[] = [
+  { name: "Profile Overview", to: "/profile", icon: FaRegUser },
+  { name: "Orders", to: "/profile/orders", icon: HiOutlineShoppingCart },
+  { name: "Returns & Cancellations", to: "/profile/returns", icon: TbTruckReturn },
+  { name: "Reviews", to: "/profile/reviews", icon: MdOutlineReviews },
+  { name: "Wishlist", to: "/profile/wishlist", icon: FaRegHeart },
+  { name: "Payment Methods", to: "/profile/payment-methods", icon: MdPayment },
+  {name:"Logout", to:"/logout", icon: LuLogOut}
+];
