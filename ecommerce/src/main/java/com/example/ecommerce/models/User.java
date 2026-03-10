@@ -1,11 +1,13 @@
 package com.example.ecommerce.models;
 
-import com.example.ecommerce.config.Provider;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.ecommerce.config.Gender;
+import com.example.ecommerce.config.Provider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -108,4 +110,12 @@ public class User {
     private Provider provider;
 
     private String providerId;
+
+    private String phoneNumber;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Gender gender;
+
+    private Date dateOfBirth;
+    
 }
