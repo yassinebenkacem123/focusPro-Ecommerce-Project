@@ -1,0 +1,66 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!*/src/main/*/target/
+!*/src/test/*/target/
+
+# Application config files
+/src/main/resources/application.properties
+/src/main/resources/application.yml
+/src/main/resources/application-*.properties
+/src/main/resources/application-*.yml
+/src/main/resources/*.properties
+/src/main/resources/*.yml
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+.env
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!*/src/main/*/build/
+!*/src/test/*/build/
+
+### VS Code ###
+.vscode/# LIST tracked files containing "application.properties" (Git Bash)
+git ls-files | grep -i 'application.properties' || true
+
+# LIST tracked files (PowerShell)
+git ls-files | Select-String -Pattern 'application.properties' -SimpleMatch -CaseSensitive:$false || Write-Output "no matches"
+
+# CMD fallback
+git ls-files | findstr /I application.properties || echo no matches
+
+# SAFELY remove from index (no error if not present)
+git rm --cached --ignore-unmatch src/main/resources/application.properties
+git rm --cached --ignore-unmatch src/main/resources/application.yml
+git rm --cached --ignore-unmatch application.properties
+git rm --cached --ignore-unmatch application.yml
+git rm --cached --ignore-unmatch src/main/resources/application-*.properties
+git rm --cached --ignore-unmatch src/main/resources/application-*.yml
+
+# Commit and push the .gitignore change
+git add .gitignore
+git commit -m "Stop tracking application config files"
+git push origin main
