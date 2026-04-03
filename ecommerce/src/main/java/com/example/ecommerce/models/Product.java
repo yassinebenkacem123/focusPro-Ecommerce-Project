@@ -52,6 +52,7 @@ public class Product {
 //    private double rating;
 
 
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;

@@ -78,14 +78,6 @@ public class User {
     )
     Set<Role> userRoles = new HashSet<>();
 
-    @ToString.Exclude
-    @OneToMany(
-        mappedBy = "user",
-        cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-        orphanRemoval = true
-    )
-    @JsonIgnore
-    private Set<Product> sellerProducts = new HashSet<>();
 
     private String imageUrl;
 
@@ -105,6 +97,14 @@ public class User {
     private PasswordResetToken passwordResetToken;
 
 
+    @OneToOne(mappedBy = "user", cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REMOVE
+    })
+    private  SellerProfile sellerProfile;
+
+
 
     @Enumerated(EnumType.STRING)
     private Provider provider;
@@ -115,6 +115,9 @@ public class User {
 
     @Enumerated(EnumType.ORDINAL)
     private Gender gender;
+
+    private String city;
+    private String country;
 
     private Date dateOfBirth;
     

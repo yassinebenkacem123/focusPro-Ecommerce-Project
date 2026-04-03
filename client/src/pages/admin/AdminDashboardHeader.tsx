@@ -1,6 +1,7 @@
 import { FiSearch, FiSun, FiMoon } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { useTheme } from "../../features/theme/useTheme";
+import AdminChatbot from "./AdminChatbot";
 
 const AdminDashboardHeader = () => {
   const { isDark, toggleTheme } = useTheme();
@@ -22,6 +23,9 @@ const AdminDashboardHeader = () => {
 
       {/* 2. Actions & Profile */}
       <div className="flex items-center gap-4">
+        
+        {/* AI Assistant */}
+        <AdminChatbot />
 
         {/* Theme Toggle Button */}
         <button
