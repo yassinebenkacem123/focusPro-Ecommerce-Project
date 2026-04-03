@@ -60,7 +60,7 @@ public class Product {
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="seller_id")
-    private User user;
+    private SellerProfile sellerProfile;
 
     @OneToMany(mappedBy = "product", 
         cascade = 

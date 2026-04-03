@@ -49,7 +49,7 @@ public class SellerProfile {
 
     @ToString.Exclude
     @OneToMany(
-        mappedBy = "user",
+        mappedBy = "sellerProfile",
         cascade = {CascadeType.MERGE, CascadeType.PERSIST},
         orphanRemoval = true
     )
