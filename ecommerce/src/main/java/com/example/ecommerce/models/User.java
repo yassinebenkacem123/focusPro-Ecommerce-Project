@@ -116,8 +116,6 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private Gender gender;
 
-    private String city;
-    private String country;
 
     private Date dateOfBirth;
     
