@@ -30,7 +30,7 @@ const AdminChatbot: React.FC = () => {
   return (
     <div className="relative z-50 flex items-center">
       {/* Enhanced Tooltip / Chat bubble */}
-      {/* <div 
+      <div 
         className={`absolute top-full mt-4 border border-gray-300/70 dark:border-gray-700/60   -right-2 px-5 py-3.5 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-2xl rounded-tr-sm shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.5)] border border-gray-200/60 dark:border-gray-700/60 whitespace-nowrap transition-all duration-500 ease-out transform origin-top-right ${
           showMessage ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 -translate-y-2 pointer-events-none"
         }`}
@@ -38,7 +38,7 @@ const AdminChatbot: React.FC = () => {
         <div className="flex items-center gap-2">
           {messages[messageIndex]}
         </div>
-      </div> */}
+      </div>
 
       {/* Button */}
       <button
