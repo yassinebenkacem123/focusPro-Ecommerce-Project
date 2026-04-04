@@ -1,6 +1,7 @@
 package com.example.ecommerce.controllers;
 
 import com.example.ecommerce.payload.CategoriesStatsDTO;
+import com.example.ecommerce.payload.ProductStatsDTO;
 import com.example.ecommerce.payload.SellersStaticsDTO;
 import com.example.ecommerce.services.AdminStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,12 @@ public class AdminStatsController {
     @GetMapping("/sellers")
     public ResponseEntity<SellersStaticsDTO> getSellersStats(){
         return adminStatsService.sellersStats();
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/products")
+    public ResponseEntity<ProductStatsDTO> getProductsStats(){
+        return adminStatsService.productStats();
+
     }
 }
