@@ -19,7 +19,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "seller_profiles")
+@Table(name = "seller_profiles",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"storeName"})
+})
 public class SellerProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +34,7 @@ public class SellerProfile {
 
 
     @Enumerated(EnumType.STRING)
-    private SellerStatus status = SellerStatus.PENDING;
+    private SellerStatus status = SellerStatus.ACTIVE;
 
     // verification status :
     private VerificationStatus verificationStatus;

@@ -54,11 +54,13 @@ public class User {
     @Email(message = "Enter a valid email.")
     @Size(max=50)
     private String email;
-    
+
+    @JsonIgnore
     @NotBlank(message = "You must provide a password.")
     @Size(min=60, max=250, message = "The password must be between 6 and 50")
     private String password;
 
+    @JsonIgnore
     @OneToMany(
         mappedBy = "user",
         cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -80,7 +82,7 @@ public class User {
 
 
     private String imageUrl;
-
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = {
         CascadeType.PERSIST, 
         CascadeType.MERGE, 
@@ -88,7 +90,7 @@ public class User {
     })
     private Cart cart;
 
-
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = {
         CascadeType.PERSIST,
         CascadeType.MERGE,
@@ -96,7 +98,7 @@ public class User {
     }) 
     private PasswordResetToken passwordResetToken;
 
-
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
@@ -116,8 +118,6 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private Gender gender;
 
-    private String city;
-    private String country;
 
     private Date dateOfBirth;
     

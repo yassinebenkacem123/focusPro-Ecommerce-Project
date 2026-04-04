@@ -1,5 +1,4 @@
 import RevealText from "../../../utils/RevealText";
-import StartDeco from "../../decoretors/StartDeco"
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 const Subscribe = () => {
