@@ -40,6 +40,7 @@ public class SellerController {
         return sellerService.addNewSellerByAdmin(sellerDTO);
 
     }
+
     // 2. getting sellers information :
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get")
@@ -79,9 +80,24 @@ public class SellerController {
         return sellerService.getSellerByAdmin(pageNumber, pageSize, sortBy, sortOrder, keyword, status);
     }
 
-    // 3. get seller profile :
 
-    // 4. get seller activities :
+    // 3. delete seller by admin :
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/admin/delete/{sellerId}")
+    public ResponseEntity<?> deleteSellerByAdmin(@PathVariable(name = "sellerId") Long sellerID){
+
+        return sellerService.deleteSeller(sellerID);
+    }
+
+    // 4. update seller profile and data :
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/admin/update/{sellerId}")
+    public ResponseEntity<?> updateSellerByAdmin(
+            @PathVariable(name = "sellerId") Long sellerID,
+            @Valid @RequestBody SellerDTO sellerDTO
+    ){
+        return sellerService.updateSeller(sellerID, sellerDTO);
+    }
 
     // 5. get seller products :
 

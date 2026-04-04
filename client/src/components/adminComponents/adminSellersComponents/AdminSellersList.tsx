@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { FaStar } from "react-icons/fa6";
-import { FiEye, FiEdit2, FiTrash2, FiUsers } from "react-icons/fi";
+import { FiEye, FiEdit2, FiUsers, FiUserX } from "react-icons/fi";
 import type { SellersProp } from "../../../pages/admin/Sellers";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -31,7 +32,23 @@ const getInitials = (sellerName: string) => {
 const AdminSellersList = ({ sellers }: { sellers: SellersProp[] }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({});
+  const [suspendingId, setSuspendingId] = useState<string | null>(null);
+
   const totalPages = Math.max(1, Math.ceil(sellers.length / ITEMS_PER_PAGE));
+
+  const handleSuspend = (email: string, currentStatus: string) => {
+    if (currentStatus.toLowerCase() === "suspended") {
+      return;
+    }
+    setSuspendingId(email);
+    // Simulate network request
+    setTimeout(() => {
+      setLocalStatuses((prev) => ({ ...prev, [email]: "suspended" }));
+      setSuspendingId(null);
+      toast.success("Seller account has been suspended.");
+    }, 800);
+  };
 
   const paginatedSellers = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -74,75 +91,118 @@ const AdminSellersList = ({ sellers }: { sellers: SellersProp[] }) => {
               </thead>
 
               <tbody className="bg-white dark:bg-transparent text-sm text-stone-700 dark:text-gray-300">
-                {paginatedSellers.map((seller, index) => (
-                  <tr
-                    key={`${seller.sellerEmail}-${index}`}
-                    className="border-t border-stone-200 dark:border-gray-700/50 transition hover:bg-stone-50 dark:hover:bg-gray-700/30"
-                  >
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-200 dark:bg-gray-700 text-xs font-semibold uppercase text-stone-700 dark:text-gray-300">
-                          {getInitials(seller.sellerName)}
+                {paginatedSellers.map((seller, index) => {
+                  const currentStatus = localStatuses[seller.sellerEmail] || seller.status;
+                  const isSuspended = currentStatus.toLowerCase() === "suspended";
+                  
+                  return (
+                    <tr
+                      key={`${seller.sellerEmail}-${index}`}
+                      className={`border-t border-stone-200 dark:border-gray-700/50 transition hover:bg-stone-50 dark:hover:bg-gray-700/30 ${
+                        isSuspended ? 'opacity-60 bg-stone-50/50 dark:bg-gray-800/40' : ''
+                      }`}
+                    >
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold uppercase ${
+                            isSuspended 
+                              ? 'bg-stone-100 dark:bg-gray-800 text-stone-400 dark:text-gray-500' 
+                              : 'bg-stone-200 dark:bg-gray-700 text-stone-700 dark:text-gray-300'
+                          }`}>
+                            {getInitials(seller.sellerName)}
+                          </div>
+                          <span className={`font-medium ${isSuspended ? 'text-stone-500 dark:text-gray-400' : 'text-stone-800 dark:text-gray-200'}`}>
+                            {seller.sellerName}
+                          </span>
                         </div>
-                        <span className="font-medium text-stone-800 dark:text-gray-200">{seller.sellerName}</span>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="px-5 py-4 font-medium text-stone-700 dark:text-gray-300">
-                      {createShopName(seller.sellerName)}
-                    </td>
+                      <td className={`px-5 py-4 font-medium ${isSuspended ? 'text-stone-500 dark:text-gray-400' : 'text-stone-700 dark:text-gray-300'}`}>
+                        {createShopName(seller.sellerName)}
+                      </td>
 
-                    <td className="px-5 py-4 text-stone-600 dark:text-gray-400">{seller.sellerEmail}</td>
+                      <td className={`px-5 py-4 ${isSuspended ? 'text-stone-400 dark:text-gray-500' : 'text-stone-600 dark:text-gray-400'}`}>
+                        {seller.sellerEmail}
+                      </td>
 
-                    <td className="px-5 py-4">
-                      <span className={getStatusBadge(seller.status)}>{seller.status}</span>
-                    </td>
+                      <td className="px-5 py-4">
+                        <span className={getStatusBadge(currentStatus)}>{currentStatus}</span>
+                      </td>
 
-                    <td className="px-5 py-4">
-                      <span className="inline-flex min-w-12 justify-center rounded-full bg-stone-100 dark:bg-gray-700/60 px-3 py-1 text-xs font-medium text-stone-700 dark:text-gray-300">
-                        {seller.numberOfProducts ?? 0}
-                      </span>
-                    </td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex min-w-12 justify-center rounded-full px-3 py-1 text-xs font-medium ${
+                          isSuspended 
+                            ? 'bg-stone-50 dark:bg-gray-800/50 text-stone-400 dark:text-gray-500' 
+                            : 'bg-stone-100 dark:bg-gray-700/60 text-stone-700 dark:text-gray-300'
+                        }`}>
+                          {seller.numberOfProducts ?? 0}
+                        </span>
+                      </td>
 
-                    <td className="px-5 py-4 font-semibold text-stone-800 dark:text-gray-200">
-                      {formatCurrency(seller.sales ?? 0)}
-                    </td>
+                      <td className={`px-5 py-4 font-semibold ${isSuspended ? 'text-stone-500 dark:text-gray-400' : 'text-stone-800 dark:text-gray-200'}`}>
+                        {formatCurrency(seller.sales ?? 0)}
+                      </td>
 
-                    <td className="px-5 py-4">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-yellow-50 dark:bg-yellow-950/30 px-3 py-1 text-xs font-medium text-stone-700 dark:text-gray-300">
-                        <FaStar size={12} className="text-yellow-500" />
-                        {(seller.rating ?? 0).toFixed(1)}
-                      </div>
-                    </td>
+                      <td className="px-5 py-4">
+                        <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
+                          isSuspended 
+                            ? 'bg-stone-50 dark:bg-gray-800/50 text-stone-400 dark:text-gray-500' 
+                            : 'bg-yellow-50 dark:bg-yellow-950/30 text-stone-700 dark:text-gray-300'
+                        }`}>
+                          <FaStar size={12} className={isSuspended ? 'text-stone-300 dark:text-gray-600' : 'text-yellow-500'} />
+                          {(seller.rating ?? 0).toFixed(1)}
+                        </div>
+                      </td>
 
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2 text-stone-500 dark:text-gray-400">
-                        <button
-                          onClick={() => navigate(`/admin/sellers/seller/${seller.sellerEmail}`)}
-                          type="button"
-                          className="rounded-lg border border-stone-200 dark:border-gray-600 p-2 transition cursor-pointer hover:bg-gray-200/50 dark:hover:bg-gray-700/60 hover:border-stone-300 dark:hover:border-gray-500 hover:text-stone-700 dark:hover:text-gray-200"
-                          aria-label={`View ${seller.sellerName}`}
-                        >
-                          <FiEye size={14} />
-                        </button>
-                        <button
-                          type="button"
-                          className="rounded-lg border border-stone-200 dark:border-gray-600 p-2 transition cursor-pointer hover:bg-green-200/80 dark:hover:bg-green-950/40 hover:border-green-300 dark:hover:border-green-700 hover:text-green-500 dark:hover:text-green-400"
-                          aria-label={`Edit ${seller.sellerName}`}
-                        >
-                          <FiEdit2 size={14} />
-                        </button>
-                        <button
-                          type="button"
-                          className="rounded-lg border border-stone-200 dark:border-gray-600 p-2 transition cursor-pointer hover:bg-red-200/80 dark:hover:bg-red-950/40 hover:border-red-300 dark:hover:border-red-700 hover:text-red-600 dark:hover:text-red-400"
-                          aria-label={`Delete ${seller.sellerName}`}
-                        >
-                          <FiTrash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2 text-stone-500 dark:text-gray-400">
+                          <button
+                            onClick={() => navigate(`/admin/sellers/seller/${seller.sellerEmail}`)}
+                            type="button"
+                            className={`rounded-lg border p-2 transition ${
+                              isSuspended 
+                                ? "border-transparent text-stone-400 dark:text-gray-500 cursor-not-allowed opacity-50 bg-stone-100 dark:bg-gray-800"
+                                : "border-stone-200 dark:border-gray-600 cursor-pointer hover:bg-gray-200/50 dark:hover:bg-gray-700/60 hover:border-stone-300 dark:hover:border-gray-500 hover:text-stone-700 dark:hover:text-gray-200"
+                            }`}
+                            aria-label={`View ${seller.sellerName}`}
+                            disabled={isSuspended}
+                          >
+                            <FiEye size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            className={`rounded-lg border p-2 transition ${
+                              isSuspended 
+                                ? "border-transparent text-stone-400 dark:text-gray-500 cursor-not-allowed opacity-50 bg-stone-100 dark:bg-gray-800"
+                                : "border-stone-200 dark:border-gray-600 cursor-pointer hover:bg-green-200/80 dark:hover:bg-green-950/40 hover:border-green-300 dark:hover:border-green-700 hover:text-green-500 dark:hover:text-green-400"
+                            }`}
+                            aria-label={`Edit ${seller.sellerName}`}
+                            disabled={isSuspended}
+                          >
+                            <FiEdit2 size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSuspend(seller.sellerEmail, currentStatus)}
+                            className={`rounded-lg border p-2 transition ${
+                              isSuspended 
+                                ? "border-transparent text-stone-400 dark:text-gray-500 cursor-not-allowed opacity-50 bg-stone-100 dark:bg-gray-800"
+                                : "border-stone-200 dark:border-gray-600 cursor-pointer hover:bg-orange-200/80 dark:hover:bg-orange-950/40 hover:border-orange-300 dark:hover:border-orange-700 hover:text-orange-600 dark:hover:text-orange-400"
+                            }`}
+                            aria-label={`Suspend ${seller.sellerName}`}
+                            disabled={isSuspended || suspendingId === seller.sellerEmail}
+                          >
+                            {suspendingId === seller.sellerEmail ? (
+                              <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-stone-400 border-t-orange-600 dark:border-gray-500 dark:border-t-orange-400" />
+                            ) : (
+                              <FiUserX size={14} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

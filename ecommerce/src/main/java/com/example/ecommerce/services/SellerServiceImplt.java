@@ -1,6 +1,7 @@
 package com.example.ecommerce.services;
 import com.example.ecommerce.config.SellerStatus;
 import com.example.ecommerce.exceptions.APIException;
+import com.example.ecommerce.exceptions.ResourceNotFoundException;
 import com.example.ecommerce.models.*;
 import com.example.ecommerce.payload.APIResponse;
 import com.example.ecommerce.payload.SellerDTO;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -108,7 +110,7 @@ public class SellerServiceImplt implements  SellerService {
         APIResponse apiResponse = new APIResponse();
         apiResponse.setStatus(true);
         apiResponse.setMessage("Seller added successfully");
-        return ResponseEntity.ok(apiResponse);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     // get all sellers :
@@ -152,5 +154,100 @@ public class SellerServiceImplt implements  SellerService {
         sellerResponse.setTheLast(sellerProfiles.isLast());
 
         return ResponseEntity.ok(sellerResponse);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteSeller(Long sellerID) {
+        SellerProfile sellerProfile = sellerProfileRepo.findById(sellerID)
+                .orElseThrow(()-> new ResourceNotFoundException("Seller", "SellerID", sellerID));
+
+        // 1. deactivate the seller profile :
+        sellerProfile.setStatus(SellerStatus.SUSPENDED);
+        sellerProfile.getSellerProducts().forEach(
+                product -> {
+                    product.setQuantity(0);
+                }
+        );
+        sellerProfileRepo.save(sellerProfile);
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(true);
+        apiResponse.setMessage("Seller deactivated successfully.");
+        return ResponseEntity.ok(apiResponse);
+
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<APIResponse> updateSeller(Long sellerID, SellerDTO sellerDTO) {
+        SellerProfile sellerProfile = sellerProfileRepo.findById(sellerID)
+                .orElseThrow(()-> new ResourceNotFoundException("Seller", "SellerID", sellerID));
+
+        User user = sellerProfile.getUser();
+
+        // Check if username is being changed and if it's already taken by another user
+        if (!user.getUsername().equals(sellerDTO.getSellerName())) {
+            if (userRepo.existsByUsername(sellerDTO.getSellerName())) {
+                throw new APIException("Username already used by another user");
+            }
+            user.setUsername(sellerDTO.getSellerName());
+        }
+
+        // Check if email is being changed and if it's already taken by another user
+        if (!user.getEmail().equals(sellerDTO.getEmail())) {
+            if (userRepo.existsByEmail(sellerDTO.getEmail())) {
+                throw new APIException("Email already used by another user");
+            }
+            user.setEmail(sellerDTO.getEmail());
+        }
+
+        // Update seller profile fields
+        sellerProfile.setStoreName(sellerDTO.getStoreName());
+        sellerProfile.setPaymentMethod(sellerDTO.getPaymentMethod());
+        sellerProfile.setVerificationStatus(sellerDTO.getVerificationStatus());
+        sellerProfile.setStatus(sellerDTO.getStatus());
+
+        // Update user fields
+        user.setPhoneNumber(sellerDTO.getPhoneNumber());
+
+        // Update or create address
+        if (sellerDTO.getBuildingName() != null || sellerDTO.getStreet() != null || 
+            sellerDTO.getCity() != null || sellerDTO.getState() != null || 
+            sellerDTO.getPincode() != null || sellerDTO.getCountry() != null) {
+            
+            Address address;
+            if (user.getUserAddresses() != null && !user.getUserAddresses().isEmpty()) {
+                // Update existing address (first one)
+                address = user.getUserAddresses().get(0);
+            } else {
+                // Create new address
+                address = new Address();
+                address.setUser(user);
+            }
+
+            address.setBuildingName(sellerDTO.getBuildingName());
+            address.setStreet(sellerDTO.getStreet());
+            address.setCity(sellerDTO.getCity());
+            address.setState(sellerDTO.getState());
+            address.setPincode(sellerDTO.getPincode());
+            address.setCountry(sellerDTO.getCountry());
+            
+            addressRepo.save(address);
+
+            // Ensure address is in user's address list
+            if (user.getUserAddresses() == null || user.getUserAddresses().isEmpty()) {
+                List<Address> addresses = new ArrayList<>();
+                addresses.add(address);
+                user.setUserAddresses(addresses);
+            }
+        }
+
+        // Save user and seller profile
+        userRepo.save(user);
+        sellerProfileRepo.save(sellerProfile);
+
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setStatus(true);
+        apiResponse.setMessage("Seller updated successfully");
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }
